@@ -1,81 +1,310 @@
 <!DOCTYPE html>
 <html lang="sr" class="dark">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Cloud Compressor & Music</title>
- <script src="https://cdn.tailwindcss.com"></script>
- <link rel="preconnect" href="https://fonts.googleapis.com">
- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
- <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Orbitron:wght@800&display=swap" rel="stylesheet">
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
- <style>
- :root { --accent: #a855f7; --glow: rgba(168, 85, 247, 0.5); --bg-dark: #111111; }
- body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); color: #e0e0e0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(168, 85, 247, 0.2) 1px, transparent 1px); background-size: 30px 30px; }
- .main-card { background: rgba(24, 24, 24, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); height: 80vh; transition: all 0.5s ease-in-out; }
- #main-content-container.compressor-view { justify-content: center; }
- #main-content-container.compressor-view #music-player-wrapper { width: 0 !important; opacity: 0; padding: 0; margin: 0; overflow: hidden; pointer-events: none; }
- #playlist li:hover { background-color: rgba(255, 255, 255, 0.05); transform: translateX(5px); }
- #playlist .active { background-color: var(--accent) !important; color: white; font-weight: 600; transform: translateX(5px); }
- input[type="range"] { -webkit-appearance: none; background: transparent; cursor: pointer; padding: 0; }
- input[type="range"]::-webkit-slider-runnable-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; }
- input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -5px; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 5px var(--glow); transition: transform 0.2s ease; }
- </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Compressor & Music</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Orbitron:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        :root { --accent: #a855f7; --glow: rgba(168, 85, 247, 0.5); --bg-dark: #111111; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); color: #e0e0e0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(168, 85, 247, 0.2) 1px, transparent 1px); background-size: 30px 30px; }
+        .main-card { background: rgba(24, 24, 24, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(168, 85, 247, 0.2); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); height: 80vh; transition: all 0.5s ease-in-out; }
+        #main-content-container.compressor-view { justify-content: center; }
+        #main-content-container.compressor-view #music-player-wrapper { width: 0 !important; opacity: 0; padding: 0; margin: 0; overflow: hidden; pointer-events: none; }
+        #playlist li:hover { background-color: rgba(255, 255, 255, 0.05); transform: translateX(5px); }
+        #playlist .active { background-color: var(--accent) !important; color: white; font-weight: 600; transform: translateX(5px); }
+        input[type="range"] { -webkit-appearance: none; background: transparent; cursor: pointer; padding: 0; }
+        input[type="range"]::-webkit-slider-runnable-track { height: 6px; background: rgba(255,255,255,0.1); border-radius: 5px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -5px; width: 16px; height: 16px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 5px var(--glow); transition: transform 0.2s ease; }
+        input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.2); }
+        .logo-font { font-family: 'Orbitron', sans-serif; }
+        .title-gradient { background: linear-gradient(90deg, #ffffff, var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .main-button { background-color: var(--accent); color: white; font-weight: 600; transition: all 0.3s ease-in-out; box-shadow: 0 0 15px var(--glow); }
+        .main-button:hover:not(:disabled) { box-shadow: 0 0 30px var(--glow); transform: translateY(-3px); filter: brightness(1.1); }
+        .main-button:disabled { background: #4b5563; color: #9ca3af; box-shadow: none; cursor: not-allowed; }
+        .player-button { background: none; border: none; color: #e0e0e0; font-size: 1.5rem; cursor: pointer; transition: all 0.2s ease; }
+        .player-button:hover { color: var(--accent); transform: scale(1.1); }
+    </style>
 </head>
 <body class="antialiased p-4">
- <div id="main-content-wrapper" class="w-full max-w-6xl">
- <div id="main-content-container" class="flex flex-col lg:flex-row items-center gap-8 w-full mx-auto transition-all duration-500 ease-in-out">
- <div id="compressor-wrapper" class="w-full lg:w-1/2 transition-all duration-500 ease-in-out">
- <div class="main-card p-8 sm:p-10 rounded-2xl flex flex-col">
- <div id="upload-box" class="screen flex-grow flex flex-col">
- <div class="text-center"><h1 class="text-4xl md:text-5xl font-bold mb-3 font-['Orbitron'] bg-gradient-to-r from-white to-purple-500 text-transparent bg-clip-text">Fux Deluxe</h1><p class="text-gray-400 mb-8 text-lg">Kompresuj video na željenu veličinu.</p></div>
- <div class="mt-auto">
- <div id="file-preview" class="hidden mb-6 text-left bg-black/20 p-4 rounded-lg border border-gray-700"><p class="font-bold text-white break-all" id="preview-filename"></p><p class="text-sm text-gray-400" id="preview-filedetails"></p></div>
- <div class="mb-4"><label for="size-input" class="block mb-2 text-sm font-medium text-gray-300">Ciljana Veličina (MB)</label><input type="number" id="size-input" value="8" min="1" class="w-full bg-black/30 border border-gray-600/50 rounded-lg p-3 text-gray-200 text-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition"></div>
- <button id="upload-btn" class="w-full font-bold py-4 px-4 rounded-lg flex items-center justify-center text-xl bg-purple-600 text-white transition-all duration-300 ease-in-out shadow-[0_0_15px_rgba(168,85,247,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-1 hover:brightness-110 disabled:bg-gray-600 disabled:text-gray-400 disabled:shadow-none disabled:cursor-not-allowed"><span id="button-content"><i class="fas fa-folder-open mr-3"></i>Izaberi Video...</span></button>
- <input type="file" id="file-input" accept="video/*" hidden>
- </div>
- </div>
- <div id="download-box" class="hidden screen text-center m-auto"><h2 class="text-3xl font-bold font-['Orbitron'] text-white mb-3">Spreman za Preuzimanje!</h2><p class="text-gray-300 mb-8">Video je optimizovan.</p><a href="#" id="download-link" class="w-full font-bold py-4 px-4 rounded-lg flex items-center justify-center text-xl bg-purple-600 text-white transition-all duration-300 ease-in-out shadow-[0_0_15px_rgba(168,85,247,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] hover:-translate-y-1 hover:brightness-110" download><i class="fas fa-download mr-3"></i>Preuzmi Fajl</a><button id="reset-btn" class="w-full mt-4 bg-gray-700/50 hover:bg-gray-700/80 text-gray-300 font-bold py-3 px-4 rounded-lg transition-colors">Kompresuj novi</button></div>
- </div>
- </div>
- <div id="music-player-wrapper" class="w-full lg:w-1/2 transition-all duration-500 ease-in-out">
- <div class="main-card p-8 sm:p-10 rounded-2xl flex flex-col">
- <h2 class="text-4xl font-bold mb-4 font-['Orbitron'] bg-gradient-to-r from-white to-purple-500 text-transparent bg-clip-text">Music Player</h2>
- <div id="playlist-container" class="flex-grow overflow-y-auto bg-black/20 p-4 rounded-lg border border-gray-700/50 mb-6"><ul id="playlist" class="space-y-2"><li class="text-gray-400">Učitavanje pesama...</li></ul></div>
- <div class="player-controls mt-auto">
- <div id="now-playing" class="text-center text-lg font-semibold truncate mb-2 h-7">Izaberi pesmu</div>
- <input type="range" id="timeline" value="0" step="1" class="w-full my-2">
- <div class="flex justify-between text-xs text-gray-400 px-1">
- <span id="current-time">0:00</span>
- <span id="total-time">0:00</span>
- </div>
- <div class="buttons flex justify-between items-center gap-4 mt-3">
- <button id="prev-btn" class="player-button"><i class="fas fa-backward-step"></i></button>
- <button id="play-pause-btn" class="player-button text-4xl"><i class="fas fa-play"></i></button>
- <button id="next-btn" class="player-button"><i class="fas fa-forward-step"></i></button>
- <div class="flex items-center gap-2">
- <i id="volume-icon" class="fas fa-volume-high text-gray-400"></i>
- <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-24">
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- </div>
- <div id="mini-player" class="mini-player fixed top-5 right-5 bg-gray-800/80 backdrop-blur-md p-4 rounded-lg shadow-2xl z-40 w-72 hidden flex-col gap-2 border border-gray-700">
- <div><div id="mini-song-info" class="font-bold truncate text-white">...</div><div id="mini-time-info" class="text-xs text-gray-400">--:-- / --:--</div></div>
- <div class="flex justify-between items-center mt-2">
- <div class="flex items-center gap-4"><button id="mini-prev-btn" class="player-button text-base"><i class="fas fa-backward-step"></i></button><button id="mini-play-pause-btn" class="player-button text-2xl"><i class="fas fa-play"></i></button><button id="mini-next-btn" class="player-button text-base"><i class="fas fa-forward-step"></i></button></div>
- <button id="mini-volume-btn" class="player-button text-base"><i class="fas fa-volume-high"></i></button>
- </div>
- </div>
- <button id="toggle-view-btn" class="fixed bottom-5 right-5 main-button rounded-full w-14 h-14 flex items-center justify-center z-40 text-xl"><i class="fas fa-compress"></i></button>
- <footer class="fixed bottom-4 left-1/2 -translate-x-1/2 text-sm text-gray-600 z-0"><p>&copy; 2025 Vladimir Vuckovic.</p></footer>
- <audio id="audio-player"></audio>
+
+    <div id="main-content-wrapper" class="w-full max-w-6xl">
+        <div id="main-content-container" class="flex flex-col lg:flex-row items-center gap-8 w-full mx-auto transition-all duration-500 ease-in-out">
+            
+            <div id="compressor-wrapper" class="w-full lg:w-1/2 transition-all duration-500 ease-in-out">
+                <div class="main-card p-8 sm:p-10 rounded-2xl flex flex-col">
+                    <div id="upload-box" class="screen flex-grow flex flex-col">
+                        <div class="text-center"><h1 class="text-4xl md:text-5xl font-bold mb-3 logo-font title-gradient">Fux Deluxe</h1><p class="text-gray-400 mb-8 text-lg">Kompresuj video na željenu veličinu.</p></div>
+                        <div class="mt-auto">
+                            <div id="file-preview" class="hidden mb-6 text-left bg-black/20 p-4 rounded-lg border border-gray-700"><p class="font-bold text-white break-all" id="preview-filename"></p><p class="text-sm text-gray-400" id="preview-filedetails"></p></div>
+                            <div class="mb-4"><label for="size-input" class="block mb-2 text-sm font-medium text-gray-300">Ciljana Veličina (MB)</label><input type="number" id="size-input" value="8" min="1" class="w-full bg-black/30 border border-gray-600/50 rounded-lg p-3 text-gray-200 text-lg focus:ring-2 focus:ring-accent focus:border-accent transition"></div>
+                            <button id="upload-btn" class="main-button w-full font-bold py-4 px-4 rounded-lg flex items-center justify-center text-xl"><span id="button-content"><i class="fas fa-folder-open mr-3"></i>Izaberi Video...</span></button>
+                            <input type="file" id="file-input" accept="video/*" hidden>
+                        </div>
+                    </div>
+                    <div id="download-box" class="hidden screen text-center m-auto"><h2 class="text-3xl font-bold logo-font text-white mb-3">Spreman za Preuzimanje!</h2><p class="text-gray-300 mb-8">Video je optimizovan.</p><a href="#" id="download-link" class="main-button w-full font-bold py-4 px-4 rounded-lg flex items-center justify-center text-xl" download><i class="fas fa-download mr-3"></i>Preuzmi Fajl</a><button id="reset-btn" class="w-full mt-4 bg-gray-700/50 hover:bg-gray-700/80 text-gray-300 font-bold py-3 px-4 rounded-lg transition-colors">Kompresuj novi</button></div>
+                </div>
+            </div>
+
+            <div id="music-player-wrapper" class="w-full lg:w-1/2 transition-all duration-500 ease-in-out">
+                <div class="main-card p-8 sm:p-10 rounded-2xl flex flex-col">
+                    <h2 class="text-4xl font-bold mb-4 logo-font title-gradient">Music Player</h2>
+                    <div id="playlist-container" class="flex-grow overflow-y-auto bg-black/20 p-4 rounded-lg border border-gray-700/50 mb-6"><ul id="playlist" class="space-y-2"><li class="text-gray-400">Učitavanje pesama...</li></ul></div>
+                    <div class="player-controls mt-auto">
+                        <div id="now-playing" class="text-center text-lg font-semibold truncate mb-2 h-7">Izaberi pesmu</div>
+                        <input type="range" id="timeline" value="0" step="1" class="w-full my-2">
+                        <div class="flex justify-between text-xs text-gray-400 px-1">
+                            <span id="current-time">0:00</span>
+                            <span id="total-time">0:00</span>
+                        </div>
+                        <div class="buttons flex justify-between items-center gap-4 mt-3">
+                            <button id="prev-btn" class="player-button"><i class="fas fa-backward-step"></i></button>
+                            <button id="play-pause-btn" class="player-button text-4xl"><i class="fas fa-play"></i></button>
+                            <button id="next-btn" class="player-button"><i class="fas fa-forward-step"></i></button>
+                            <div class="flex items-center gap-2">
+                                <i id="volume-icon" class="fas fa-volume-high text-gray-400"></i>
+                                <input type="range" id="volume-slider" min="0" max="100" value="100" class="w-24">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mini-player" class="mini-player fixed top-5 right-5 bg-gray-800/80 backdrop-blur-md p-4 rounded-lg shadow-2xl z-40 w-72 hidden flex-col gap-2 border border-gray-700">
+        <div><div id="mini-song-info" class="font-bold truncate text-white">...</div><div id="mini-time-info" class="text-xs text-gray-400">--:-- / --:--</div></div>
+        <div class="flex justify-between items-center mt-2">
+            <div class="flex items-center gap-4"><button id="mini-prev-btn" class="player-button text-base"><i class="fas fa-backward-step"></i></button><button id="mini-play-pause-btn" class="player-button text-2xl"><i class="fas fa-play"></i></button><button id="mini-next-btn" class="player-button text-base"><i class="fas fa-forward-step"></i></button></div>
+            <button id="mini-volume-btn" class="player-button text-base"><i class="fas fa-volume-high"></i></button>
+        </div>
+    </div>
+    
+    <button id="toggle-view-btn" class="fixed bottom-5 right-5 main-button rounded-full w-14 h-14 flex items-center justify-center z-40 text-xl"><i class="fas fa-compress"></i></button>
+    
+    <footer class="fixed bottom-4 left-1/2 -translate-x-1/2 text-sm text-gray-600 z-0">
+        <p>&copy; 2025 Vladimir Vuckovic.</p>
+    </footer>
+
+    <audio id="audio-player"></audio>
+
 <script>
-document.addEventListener("DOMContentLoaded",()=>{try{const e=document.getElementById("upload-btn"),t=document.getElementById("button-content"),n=document.getElementById("file-input"),o=document.getElementById("download-link"),d=document.getElementById("reset-btn"),i=document.getElementById("size-input"),l=document.getElementById("upload-box"),a=document.getElementById("download-box"),s=document.getElementById("file-preview"),c=document.getElementById("preview-filename"),r=document.getElementById("preview-filedetails");let u=null;function m(l){l&&(u=l,c.textContent=l.name,r.textContent=`Veličina: ${p(l.size)}`,s.classList.remove("hidden"),t.innerHTML='<i class="fas fa-cogs mr-3"></i>Kompresuj Sada')}function p(e,t=2){if(!+e)return"0 Bytes";const n=1024,o=t<0?0:t,d=["Bytes","KB","MB","GB"],i=Math.floor(Math.log(e)/Math.log(n));return`${parseFloat((e/Math.pow(n,i)).toFixed(o))} ${d[i]}`}e.addEventListener("click",()=>{u?function(e){t.innerHTML='<i class="fas fa-spinner fa-spin mr-3"></i>Kompresujem...';const n=new FormData;n.append("file",e),n.append("target_size",i.value);const s="https://fux-deluxe-backend.onrender.com";fetch(`${s}/upload`,{method:"POST",body:n}).then(e=>{if(!e.ok)return e.json().then(e=>{throw new Error(e.error||"Greška sa servera.")});return e.json()}).then(t=>{o.href=`${s}${t.download_url}`,o.setAttribute("download",`kompresovan-${e.name}`),l.classList.add("hidden"),a.classList.remove("hidden")}).catch(e=>{alert(`Došlo je do greške: ${e.message}`),function(){l.classList.remove("hidden"),a.classList.add("hidden"),u=null,t.innerHTML='<i class="fas fa-folder-open mr-3"></i>Izaberi Video...',e.disabled=!1,s.classList.add("hidden"),n.value=""}()})}(u):n.click()}),n.addEventListener("change",e=>m(e.target.files[0])),d.addEventListener("click",()=>function(){l.classList.remove("hidden"),a.classList.add("hidden"),u=null,t.innerHTML='<i class="fas fa-folder-open mr-3"></i>Izaberi Video...',e.disabled=!1,s.classList.add("hidden"),n.value=""}())}catch(e){console.error("Greška kompresor:",e)}try{const e="erqf",t="compress",n="pesme",o=`https://api.github.com/repos/${e}/${t}/contents/${n}`,d=document.getElementById("audio-player"),i=document.getElementById("playlist"),l=document.getElementById("now-playing"),a=document.getElementById("timeline"),s=document.getElementById("current-time"),c=document.getElementById("total-time"),r=document.getElementById("play-pause-btn"),u=document.getElementById("prev-btn"),m=document.getElementById("next-btn"),p=document.getElementById("volume-slider"),f=document.getElementById("volume-icon"),g=document.getElementById("main-content-container"),h=document.getElementById("toggle-view-btn"),y=h.querySelector("i"),v=document.getElementById("mini-player"),b=document.getElementById("mini-song-info"),E=document.getElementById("mini-time-info"),k=document.getElementById("mini-prev-btn"),w=document.getElementById("mini-play-pause-btn"),L=document.getElementById("mini-next-btn"),x=document.getElementById("mini-volume-btn");let I=[],S=-1,B=!1,C=1;const M=e=>{if(isNaN(e))return"0:00";const t=Math.floor(e/60),n=Math.floor(e%60);return`${t}:${n<10?"0":""}${n}`};async function A(){try{const e=await fetch(o);if(!e.ok)throw new Error("Greška sa GitHub API.");const t=await e.json();I=t.filter(e=>e.name.endsWith(".mp3")).map(e=>({name:e.name.replace(".mp3","").replace(/_/g," "),url:e.download_url})),T()}catch(e){i.innerHTML=`<li class="text-red-400">${e.message}</li>`}}function T(){0===I.length?i.innerHTML='<li class="text-gray-400">Nema pesama.</li>':(i.innerHTML=I.map((e,t)=>`<li data-index="${t}" class="p-3 rounded-md cursor-pointer transition-all duration-200 ease-out truncate">${e.name}</li>`).join(""),i.querySelectorAll("li").forEach(e=>e.addEventListener("click",()=>N(parseInt(e.dataset.index)))))}function N(e){e<0||e>=I.length||(S=e,d.src=I[S].url,d.play())}function P(){const e=r.querySelector("i"),t=w.querySelector("i");e.className=`fas ${B?"fa-pause":"fa-play"}`,t.className=`fas ${B?"fa-sfa-play"}`,b.classList.toggle("playing-title",B)}function V(){const e=I[S];l.textContent=e.name,b.textContent=e.name,document.querySelectorAll("#playlist li").forEach(t=>t.classList.toggle("active",parseInt(t.dataset.index)===S))}function H(e){const t=0===e?"fa-volume-xmark":e<.5?"fa-volume-low":"fa-volume-high";f.className=`fas ${t} text-gray-400`,x.querySelector("i").className=`fas ${t}`}r.addEventListener("click",()=>{B?d.pause():-1===S?N(0):d.play()}),m.addEventListener("click",()=>N((S+1)%I.length)),u.addEventListener("click",()=>N((S-1+I.length)%I.length)),w.addEventListener("click",()=>r.click()),L.addEventListener("click",()=>m.click()),k.addEventListener("click",()=>u.click()),d.addEventListener("play",()=>{B=!0,P(),V()}),d.addEventListener("pause",()=>{B=!1,P()}),d.addEventListener("ended",()=>m.click()),d.addEventListener("timeupdate",()=>{if(isNaN(d.duration))return;a.value=d.currentTime,s.textContent=M(d.currentTime),E.textContent=`${M(d.currentTime)} / ${M(d.duration)}`}),d.addEventListener("loadedmetadata",()=>{a.max=d.duration,c.textContent=M(d.duration)}),a.addEventListener("input",()=>{d.currentTime=a.value}),p.addEventListener("input",e=>{const t=e.target.value/100;d.volume=t,H(t)}),x.addEventListener("click",()=>{d.volume>0?(C=d.volume,d.volume=0):d.volume=C,p.value=100*d.volume,H(d.volume)}),h.addEventListener("click",()=>{const e=g.classList.toggle("compressor-view");y.className=`fas ${e?"fa-expand":"fa-compress"}`,e&&S>-1?v.classList.add("visible"):v.classList.remove("visible")}),A()}catch(e){console.error("Greška plejer:",e)}});
+document.addEventListener('DOMContentLoaded', () => {
+    // ==========================================================
+    // DEO ZA KOMPRESOR
+    // ==========================================================
+    try {
+        const uploadBtn = document.getElementById('upload-btn');
+        const uploadBtnContent = document.getElementById('button-content');
+        const fileInput = document.getElementById('file-input');
+        const downloadLink = document.getElementById('download-link');
+        const resetBtn = document.getElementById('reset-btn');
+        const sizeInput = document.getElementById('size-input');
+        const uploadBox = document.getElementById('upload-box');
+        const downloadBox = document.getElementById('download-box');
+        const filePreview = document.getElementById('file-preview');
+        const previewFilename = document.getElementById('preview-filename');
+        const previewFiledetails = document.getElementById('preview-filedetails');
+        let selectedFile = null;
+
+        uploadBtn.addEventListener('click', () => {
+            if (selectedFile) {
+                handleUpload(selectedFile);
+            } else {
+                fileInput.click();
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => handleFileSelection(e.target.files[0]));
+        resetBtn.addEventListener('click', resetUI);
+
+        function handleFileSelection(file) {
+            if (file) {
+                selectedFile = file;
+                previewFilename.textContent = file.name;
+                previewFiledetails.textContent = `Veličina: ${formatBytes(file.size)}`;
+                filePreview.classList.remove('hidden');
+                uploadBtnContent.innerHTML = `<i class="fas fa-cogs mr-3"></i>Kompresuj Sada`;
+            }
+        }
+
+        function handleUpload(file) {
+            uploadBtn.disabled = true;
+            uploadBtnContent.innerHTML = `<i class="fas fa-spinner fa-spin mr-3"></i>Kompresujem...`;
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('target_size', sizeInput.value);
+
+            const serverUrl = 'https://fux-deluxe-backend.onrender.com';
+
+            fetch(`${serverUrl}/upload`, { method: "POST", body: formData })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => { throw new Error(err.error || "Greška sa servera.") });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    downloadLink.href = `${serverUrl}${data.download_url}`;
+                    downloadLink.setAttribute('download', `kompresovan-${file.name}`);
+                    uploadBox.classList.add('hidden');
+                    downloadBox.classList.remove('hidden');
+                })
+                .catch(error => {
+                    alert(`Došlo je do greške: ${error.message}`);
+                    resetUI();
+                });
+        }
+
+        function resetUI() {
+            uploadBox.classList.remove('hidden');
+            downloadBox.classList.add('hidden');
+            selectedFile = null;
+            uploadBtnContent.innerHTML = `<i class="fas fa-folder-open mr-3"></i>Izaberi Video...`;
+            uploadBtn.disabled = false;
+            filePreview.classList.add('hidden');
+            fileInput.value = '';
+        }
+
+        function formatBytes(bytes, d = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024, i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(d < 0 ? 0 : d))} ${['Bytes', 'KB', 'MB', 'GB'][i]}`;
+        }
+    } catch (err) {
+        console.error("Greška kompresor:", err);
+    }
+
+    // ==========================================================
+    // DEO ZA MUZIČKI PLEJER
+    // ==========================================================
+    try {
+        const GITHUB_USER = 'erqf';
+        const GITHUB_REPO = 'compress';
+        const MUSIC_FOLDER_PATH = 'pesme';
+        const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${MUSIC_FOLDER_PATH}`;
+
+        const audioPlayer = document.getElementById('audio-player');
+        const playlistElement = document.getElementById('playlist');
+        const nowPlaying = document.getElementById('now-playing');
+        const timeline = document.getElementById('timeline');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const volumeSlider = document.getElementById('volume-slider');
+        const volumeIcon = document.getElementById('volume-icon');
+        const mainContentContainer = document.getElementById('main-content-container');
+        const toggleViewBtn = document.getElementById('toggle-view-btn');
+        const toggleViewIcon = toggleViewBtn.querySelector('i');
+        const miniPlayer = document.getElementById('mini-player');
+        const miniSongInfo = document.getElementById('mini-song-info');
+        const miniTimeInfo = document.getElementById('mini-time-info');
+        const miniPrevBtn = document.getElementById('mini-prev-btn');
+        const miniPlayPauseBtn = document.getElementById('mini-play-pause-btn');
+        const miniNextBtn = document.getElementById('mini-next-btn');
+        const miniVolumeBtn = document.getElementById('mini-volume-btn');
+
+        let songs = [];
+        let currentSongIndex = -1;
+        let isPlaying = false;
+        let lastVolume = 1;
+
+        const formatPlayerTime = (t) => {
+            if (isNaN(t)) return "0:00";
+            const m = Math.floor(t / 60);
+            const s = Math.floor(t % 60);
+            return `${m}:${s < 10 ? '0' : ''}${s}`;
+        };
+
+        async function fetchSongs() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Greška sa GitHub API.");
+                const data = await response.json();
+                songs = data.filter(f => f.name.endsWith('.mp3')).map(f => ({ name: f.name.replace('.mp3', '').replace(/_/g, ' '), url: f.download_url }));
+                renderPlaylist();
+            } catch (e) {
+                playlistElement.innerHTML = `<li class="text-red-400">${e.message}</li>`;
+            }
+        }
+
+        function renderPlaylist() {
+            if (songs.length === 0) {
+                playlistElement.innerHTML = `<li class="text-gray-400">Nema pesama.</li>`;
+                return;
+            }
+            playlistElement.innerHTML = songs.map((s, i) => `<li data-index="${i}" class="p-3 rounded-md cursor-pointer transition-all duration-200 ease-out truncate">${s.name}</li>`).join('');
+            playlistElement.querySelectorAll('li').forEach(li => li.addEventListener('click', () => playSong(parseInt(li.dataset.index))));
+        }
+
+        function playSong(i) {
+            if (i < 0 || i >= songs.length) return;
+            currentSongIndex = i;
+            audioPlayer.src = songs[currentSongIndex].url;
+            audioPlayer.play();
+        }
+
+        function updateUIonPlayState() {
+            const p = 'fa-play', a = 'fa-pause';
+            const mainIcon = playPauseBtn.querySelector('i');
+            const miniIcon = miniPlayPauseBtn.querySelector('i');
+            mainIcon.className = `fas ${isPlaying ? a : p}`;
+            miniIcon.className = `fas ${isPlaying ? a : p}`;
+            miniSongInfo.classList.toggle('playing-title', isPlaying);
+        }
+
+        function updateSongInfo() {
+            const s = songs[currentSongIndex];
+            nowPlaying.textContent = s.name;
+            miniSongInfo.textContent = s.name;
+            document.querySelectorAll('#playlist li').forEach(li => li.classList.toggle('active', parseInt(li.dataset.index) === currentSongIndex));
+        }
+
+        function updateVolumeIcon(v) {
+            const i = v === 0 ? 'fa-volume-xmark' : v < 0.5 ? 'fa-volume-low' : 'fa-volume-high';
+            volumeIcon.className = `fas ${i} text-gray-400`;
+            miniVolumeBtn.querySelector('i').className = `fas ${i}`;
+        }
+
+        playPauseBtn.addEventListener('click', () => { isPlaying ? audioPlayer.pause() : (currentSongIndex === -1 ? playSong(0) : audioPlayer.play()); });
+        nextBtn.addEventListener('click', () => playSong((currentSongIndex + 1) % songs.length));
+        prevBtn.addEventListener('click', () => playSong((currentSongIndex - 1 + songs.length) % songs.length));
+        miniPlayPauseBtn.addEventListener('click', () => playPauseBtn.click());
+        miniNextBtn.addEventListener('click', () => nextBtn.click());
+        miniPrevBtn.addEventListener('click', () => prevBtn.click());
+
+        audioPlayer.addEventListener('play', () => { isPlaying = true; updateUIonPlayState(); updateSongInfo(); });
+        audioPlayer.addEventListener('pause', () => { isPlaying = false; updateUIonPlayState(); });
+        audioPlayer.addEventListener('ended', () => nextBtn.click());
+
+        audioPlayer.addEventListener('timeupdate', () => {
+            if (isNaN(audioPlayer.duration)) return;
+            timeline.value = audioPlayer.currentTime;
+            currentTimeEl.textContent = formatPlayerTime(audioPlayer.currentTime);
+            miniTimeInfo.textContent = `${formatPlayerTime(audioPlayer.currentTime)} / ${formatPlayerTime(audioPlayer.duration)}`;
+        });
+
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            timeline.max = audioPlayer.duration;
+            totalTimeEl.textContent = formatPlayerTime(audioPlayer.duration);
+        });
+
+        timeline.addEventListener('input', () => { audioPlayer.currentTime = timeline.value; });
+        volumeSlider.addEventListener('input', e => { const v = e.target.value / 100; audioPlayer.volume = v; updateVolumeIcon(v); });
+        miniVolumeBtn.addEventListener('click', () => { if (audioPlayer.volume > 0) { lastVolume = audioPlayer.volume; audioPlayer.volume = 0; } else { audioPlayer.volume = lastVolume; } volumeSlider.value = 100 * audioPlayer.volume; updateVolumeIcon(audioPlayer.volume); });
+        toggleViewBtn.addEventListener('click', () => { const i = mainContentContainer.classList.toggle('compressor-view'); toggleViewIcon.className = `fas ${i ? 'fa-expand' : 'fa-compress'}`; if (i && currentSongIndex > -1) { miniPlayer.classList.add('visible'); } else { miniPlayer.classList.remove('visible'); } });
+
+        fetchSongs();
+    } catch (err) {
+        console.error("Greška plejer:", err);
+    }
+});
 </script>
 </body>
 </html>
